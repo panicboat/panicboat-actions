@@ -1,0 +1,73 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base", ":semanticCommits", ":separateMajorReleases", "group:monorepos", "group:recommended"],
+  "semanticCommitScope": "{{packageFileDir}}",
+  "timezone": "Asia/Tokyo",
+  "labels": ["🤖 renovate"],
+  "assigneesFromCodeOwners": false,
+  "reviewersFromCodeOwners": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "platformAutomerge": true,
+  "prConcurrentLimit": 15,
+  "prHourlyLimit": 5,
+  "branchPrefix": "renovate/",
+  "rangeStrategy": "bump",
+
+  "schedule": ["before 4am every weekday"],
+  "minimumReleaseAge": "1 day",
+  "separateMinorPatch": false,
+  "packageRules": [
+    {
+      "description": "Default: separate PRs per package",
+      "matchPackagePatterns": ["*"],
+      "groupName": "{{packageFileDir}}/{{depName}}"
+    },
+
+    {
+      "description": "🚫 Production environments - disable automerge",
+      "matchPaths": ["**/production/**"],
+      "automerge": false,
+      "prPriority": -1,
+      "addLabels": ["⚠️ production"]
+    },
+
+    {
+      "description": "🚫 Major updates - disable automerge",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "addLabels": ["📈 major-update"]
+    },
+
+    {
+      "description": "✅ Minor/Patch updates - enable automerge",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    }
+  ],
+
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track OpenTofu version pinned in terragrunt composite action",
+      "fileMatch": ["^terragrunt/action\\.yaml$"],
+      "matchStrings": [
+        "tofu_version:\\s*['\"](?<currentValue>[^'\"]+)['\"]"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "opentofu/opentofu",
+      "extractVersionTemplate": "^v?(?<version>.+)$"
+    },
+    {
+      "customType": "regex",
+      "description": "Track Terragrunt version pinned in terragrunt composite action",
+      "fileMatch": ["^terragrunt/action\\.yaml$"],
+      "matchStrings": [
+        "tg_version:\\s*['\"](?<currentValue>[^'\"]+)['\"]"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "gruntwork-io/terragrunt",
+      "extractVersionTemplate": "^v?(?<version>.+)$"
+    }
+  ]
+}
