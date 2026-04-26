@@ -10,12 +10,9 @@ panicboat の環境向けに作った個人用 GitHub Actions composite wrapper 
 
 ## 提供 Action
 
-- `auto-approve/` — bot 由来の PR を自動 approve / merge
-- `claude-code-action/` — AWS Bedrock 経由で Claude Code を実行
-- `container-builder/` — GHCR にコンテナイメージを build & push
-- `container-cleaner/` — GHCR の untagged コンテナイメージを掃除
-- `kubernetes/` — kustomize overlay を build して PR に diff をコメント
-- `terragrunt/` — AWS OIDC で Terragrunt の plan/apply を実行
+- `claude-run/` — AWS Bedrock 経由で Claude Code を実行
+- `kustomize-diff/` — kustomize overlay を build して PR に diff をコメント
+- `terragrunt-run/` — AWS OIDC で Terragrunt の plan/apply を実行
 
 ## 関連
 
