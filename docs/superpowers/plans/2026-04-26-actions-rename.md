@@ -30,13 +30,18 @@ This phase runs in the existing worktree at `panicboat-actions/.claude/worktrees
 
 - [ ] **Step 1: Append test workflow exclusion**
 
+Worktree 内では `.git` がファイルなので、`git rev-parse --git-path` で実体パスを解決してから append する。
+
 ```bash
-echo "/.github/workflows/test--*.yaml" >> .git/info/exclude
+exclude=$(git rev-parse --git-path info/exclude)
+echo "/.github/workflows/test--*.yaml" >> "$exclude"
 ```
 
 - [ ] **Step 2: Verify entry is present**
 
-Run: `tail -3 .git/info/exclude`
+```bash
+tail -3 "$(git rev-parse --git-path info/exclude)"
+```
 Expected: 末尾に `/.github/workflows/test--*.yaml` が含まれる。
 
 ### Task 1.1: Create claude-run action
