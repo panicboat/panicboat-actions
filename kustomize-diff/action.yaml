@@ -64,7 +64,7 @@ runs:
       uses: thollander/actions-comment-pull-request@v3.0.1
       with:
         message: |
-          ## Kubernetes Diff
+          ## Kustomize Diff
 
           **Service**: `${{ inputs.service-name }}`
           **Environment**: `${{ inputs.environment }}`
