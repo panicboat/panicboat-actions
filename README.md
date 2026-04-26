@@ -10,12 +10,9 @@ This repository hosts composite actions tailored to the maintainer's environment
 
 ## Available actions
 
-- `auto-approve/` — Auto-approve and merge bot PRs.
-- `claude-code-action/` — Run Claude Code via AWS Bedrock for repository automation.
-- `container-builder/` — Build and push container images to GHCR.
-- `container-cleaner/` — Clean up untagged container images on GHCR.
-- `kubernetes/` — Build kustomize overlays and post diff as a PR comment.
-- `terragrunt/` — Execute Terragrunt plan/apply with AWS OIDC.
+- `claude-run/` — Run Claude Code via AWS Bedrock for repository automation.
+- `kustomize-diff/` — Build kustomize overlays and post diff as a PR comment.
+- `terragrunt-run/` — Execute Terragrunt plan or apply with AWS OIDC.
 
 ## Related
 
