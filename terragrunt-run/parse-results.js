@@ -60,7 +60,12 @@ module.exports = async ({ core, inputs, steps }) => {
       // Truncate if too long (GitHub comment limit consideration)
       const maxLength = 30000;
       if (output.length > maxLength) {
-        output = output.substring(0, maxLength) + '\n... (output truncated, see workflow logs for full details)';
+        output = output.substring(0, maxLength);
+        const serverUrl = process.env.GITHUB_SERVER_URL;
+        const repository = process.env.GITHUB_REPOSITORY;
+        const runId = process.env.GITHUB_RUN_ID;
+        const runUrl = `${serverUrl}/${repository}/actions/runs/${runId}`;
+        truncationNotice = `> ⚠️ Output truncated. [View full logs](${runUrl}) for complete details.`;
       }
     }
 

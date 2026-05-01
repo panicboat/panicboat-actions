@@ -48,3 +48,28 @@ test('truncation-notice is empty string when output fits within limit', async ()
   await parseResults({ core, ...makeArgs() });
   assert.equal(core.outputs['truncation-notice'], '');
 });
+
+test('truncation-notice contains workflow run link when output exceeds limit', async () => {
+  const core = makeCore();
+  const longOutput = 'x'.repeat(30001);
+  await parseResults({
+    core,
+    ...makeArgs({ stepOutputs: { tg_action_output: longOutput } }),
+  });
+  assert.equal(
+    core.outputs['truncation-notice'],
+    '> ⚠️ Output truncated. [View full logs](https://github.com/panicboat/panicboat-actions/actions/runs/12345) for complete details.',
+  );
+});
+
+test('output is truncated to maxLength and contains no trailing notice when over limit', async () => {
+  const core = makeCore();
+  const longOutput = 'x'.repeat(30001);
+  await parseResults({
+    core,
+    ...makeArgs({ stepOutputs: { tg_action_output: longOutput } }),
+  });
+  assert.equal(core.outputs['output'].length, 30000);
+  assert.ok(!core.outputs['output'].includes('output truncated'));
+  assert.ok(!core.outputs['output'].includes('see workflow logs'));
+});
