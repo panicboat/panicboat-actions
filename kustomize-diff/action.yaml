@@ -31,7 +31,7 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout base ref
-      uses: actions/checkout@v6
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         ref: ${{ github.event.pull_request.base.sha }}
         path: base
@@ -39,14 +39,14 @@ runs:
 
     - name: Build head manifests
       id: kustomize-head
-      uses: int128/kustomize-action@v1
+      uses: int128/kustomize-action@9798629d2ace6037d587f4bbdc01423e28010535 # v1.181.0
       with:
         kustomization: ${{ inputs.path }}/kustomization.yaml
         write-individual-files: true
 
     - name: Build base manifests
       id: kustomize-base
-      uses: int128/kustomize-action@v1
+      uses: int128/kustomize-action@9798629d2ace6037d587f4bbdc01423e28010535 # v1.181.0
       with:
         base-directory: base
         kustomization: ${{ inputs.path }}/kustomization.yaml
@@ -54,14 +54,14 @@ runs:
 
     - name: Diff manifests
       id: diff
-      uses: int128/diff-action@v2
+      uses: int128/diff-action@7a7e313ee8f41930654defec914b7d76a04f76ee # v2.22.0
       with:
         base: ${{ steps.kustomize-base.outputs.directory }}
         head: ${{ steps.kustomize-head.outputs.directory }}
 
     - name: Comment PR
       if: inputs.pr-number != ''
-      uses: thollander/actions-comment-pull-request@v3.0.1
+      uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3.0.1
       with:
         message: |
           ## Kustomize Diff
