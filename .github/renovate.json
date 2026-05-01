@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", ":semanticCommits", ":separateMajorReleases", "group:monorepos", "group:recommended"],
+  "extends": ["config:base", ":semanticCommits", ":separateMajorReleases", "group:monorepos", "group:recommended", "helpers:pinGitHubActionDigests"],
   "semanticCommitScope": "{{packageFileDir}}",
   "timezone": "Asia/Tokyo",
   "labels": ["🤖 renovate"],

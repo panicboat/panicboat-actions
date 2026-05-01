@@ -46,12 +46,12 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         token: ${{ inputs.token }}
 
     - name: Validate working directory
-      uses: actions/github-script@v9.0.0
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       with:
         script: |
           const path = require('path');
@@ -59,7 +59,7 @@ runs:
           await validateWorkingDirectory({ core, inputs: ${{ toJSON(inputs) }} });
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v6.1.0
+      uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
       with:
         role-to-assume: ${{ inputs.iam-role }}
         aws-region: ${{ inputs.aws-region }}
@@ -67,7 +67,7 @@ runs:
         audience: sts.amazonaws.com
 
     - name: Verify AWS credentials
-      uses: actions/github-script@v9.0.0
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       with:
         script: |
           const path = require('path');
@@ -76,7 +76,7 @@ runs:
 
     - name: Execute Terragrunt
       id: terragrunt
-      uses: gruntwork-io/terragrunt-action@v3.2.0
+      uses: gruntwork-io/terragrunt-action@53dbdc2c3d43e82bf3bae10b734a968196442bec # v3.2.0
       with:
         tg_version: '1.0.2'
         tofu_version: '1.11.6'
@@ -92,7 +92,7 @@ runs:
     - name: Parse execution results
       if: always()
       id: parse-results
-      uses: actions/github-script@v9.0.0
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       with:
         script: |
           const path = require('path');
@@ -112,7 +112,7 @@ runs:
 
     - name: Comment PR with Terragrunt results
       if: always() && inputs.pr-number != ''
-      uses: thollander/actions-comment-pull-request@v3.0.1
+      uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3.0.1
       with:
         message: |
           ## 🏗️ Terragrunt ${{ inputs.action-type }} Results

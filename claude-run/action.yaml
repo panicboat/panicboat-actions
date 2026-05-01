@@ -38,19 +38,19 @@ runs:
         fi
 
     - name: Checkout code
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         token: ${{ inputs.token }}
         fetch-depth: 1
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v6.1.0
+      uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
       with:
         role-to-assume: ${{ inputs.aws-role-arn }}
         aws-region: ${{ inputs.aws-region }}
 
     - name: Run Claude Code
-      uses: anthropics/claude-code-action@v1.0.103
+      uses: anthropics/claude-code-action@4e5d8b13ca281a6d163cdb287d8917b216e00d6f # v1.0.103
       with:
         github_token: ${{ inputs.token }}
         trigger_phrase: ${{ inputs.trigger-phrase }}
