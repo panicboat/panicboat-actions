@@ -31,21 +31,56 @@ function cleanMultilineText(text) {
   return cleaned;
 }
 
-module.exports = async ({ core, inputs, steps }) => {
+async function resolveJobUrl({ github, context }) {
+  const serverUrl = process.env.GITHUB_SERVER_URL;
+  const repository = process.env.GITHUB_REPOSITORY;
+  const runId = process.env.GITHUB_RUN_ID;
+  const runUrl = `${serverUrl}/${repository}/actions/runs/${runId}`;
+
+  if (!github || !context) return runUrl;
+
+  try {
+    const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      run_id: context.runId,
+      per_page: 100,
+    });
+
+    const runnerName = process.env.RUNNER_NAME;
+    const jobName = process.env.GITHUB_JOB;
+
+    let currentJob = null;
+    if (runnerName) {
+      currentJob = jobs.find((j) => j.runner_name === runnerName && j.status === 'in_progress');
+    }
+    if (!currentJob && jobName) {
+      currentJob = jobs.find((j) => j.name === jobName && j.status === 'in_progress');
+    }
+
+    return currentJob?.html_url || runUrl;
+  } catch {
+    return runUrl;
+  }
+}
+
+module.exports = async ({ core, inputs, steps, github, context }) => {
   try {
     core.info('📊 Parsing Terragrunt execution results');
-    
+
     const exitCode = steps.terragrunt.outputs.tg_action_exit_code;
     const actionType = inputs['action-type'];
     const rawOutput = steps.terragrunt.outputs.tg_action_output;
-    
+
     core.info(`Exit Code: ${exitCode}`);
     core.info(`Action Type: ${actionType}`);
-    
+
     // Determine status and failure state
     const isSuccess = exitCode === '0';
     const status = isSuccess ? '✅ Success' : `❌ Failed (exit code: ${exitCode})`;
     const isFailed = !isSuccess;
+
+    const jobUrl = await resolveJobUrl({ github, context });
 
     let truncationNotice = '';
 
@@ -61,11 +96,7 @@ module.exports = async ({ core, inputs, steps }) => {
       const maxLength = 30000;
       if (output.length > maxLength) {
         output = output.substring(0, maxLength);
-        const serverUrl = process.env.GITHUB_SERVER_URL;
-        const repository = process.env.GITHUB_REPOSITORY;
-        const runId = process.env.GITHUB_RUN_ID;
-        const runUrl = `${serverUrl}/${repository}/actions/runs/${runId}`;
-        truncationNotice = `> ⚠️ Output truncated. [View full logs](${runUrl}) for complete details.`;
+        truncationNotice = `> ⚠️ Output truncated. [View full logs](${jobUrl}) for complete details.`;
       }
     }
 
@@ -74,6 +105,7 @@ module.exports = async ({ core, inputs, steps }) => {
     core.setOutput('is-failed', isFailed.toString());
     core.setOutput('output', output);
     core.setOutput('truncation-notice', truncationNotice);
+    core.setOutput('job-url', jobUrl);
     
     // Log summary
     core.info('📊 Execution Summary:');
