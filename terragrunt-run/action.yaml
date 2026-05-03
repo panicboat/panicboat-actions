@@ -94,11 +94,14 @@ runs:
       id: parse-results
       uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       with:
+        github-token: ${{ inputs.token }}
         script: |
           const path = require('path');
           const parseResults = require(path.join(process.env.GITHUB_ACTION_PATH, 'parse-results.js'));
           await parseResults({
             core,
+            github,
+            context,
             inputs: ${{ toJSON(inputs) }},
             steps: {
               terragrunt: {
@@ -120,7 +123,7 @@ runs:
           **Service**: `${{ inputs.service-name }}`
           **Environment**: `${{ inputs.environment }}`
           **Status**: ${{ steps.parse-results.outputs.status }}
-          **Workflow Run**: [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          **Workflow Run**: [#${{ github.run_id }}](${{ steps.parse-results.outputs.job-url }})
 
           <details>
           <summary>📋 Terragrunt Output</summary>
@@ -129,6 +132,7 @@ runs:
           ${{ steps.parse-results.outputs.output }}
           ```
           </details>
+
           ${{ steps.parse-results.outputs.truncation-notice }}
         comment-tag: "terragrunt-${{ inputs.service-name }}-${{ inputs.environment }}-${{ inputs.action-type }}"
         mode: upsert
