@@ -23,8 +23,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           release-type: simple
-          bootstrap-sha: f51d1f1c85f7f147218ecb8f9b5adaeaee9d3ac3
-          initial-version: "0.1.0"
+          release-as: "0.1.0" # 初回 release 後にこの行を削除する追従 PR を出す
 
       - name: Checkout for major tag update
         if: ${{ steps.release.outputs.release_created }}
