@@ -74,20 +74,53 @@ runs:
           const verifyCredentials = require(path.join(process.env.GITHUB_ACTION_PATH, 'verify-aws-credentials.js'));
           await verifyCredentials({ core, inputs: ${{ toJSON(inputs) }} });
 
+    - name: Setup aqua
+      uses: aquaproj/aqua-installer@11dd79b4e498d471a9385aa9fb7f62bb5f52a73c # v4.0.4
+      with:
+        aqua_version: v2.48.2
+      env:
+        AQUA_CONFIG: ${{ github.workspace }}/.github/aqua.yaml
+
+    - name: Verify required binaries
+      shell: bash
+      env:
+        AQUA_CONFIG: ${{ github.workspace }}/.github/aqua.yaml
+      run: |
+        set -euo pipefail
+        missing=()
+        command -v terragrunt >/dev/null || missing+=("gruntwork-io/terragrunt")
+        command -v tofu       >/dev/null || missing+=("opentofu/opentofu")
+        if [ ${#missing[@]} -gt 0 ]; then
+          echo "::error::Missing aqua packages: ${missing[*]}. Add them to .github/aqua.yaml."
+          exit 1
+        fi
+
     - name: Execute Terragrunt
       id: terragrunt
-      uses: gruntwork-io/terragrunt-action@53dbdc2c3d43e82bf3bae10b734a968196442bec # v3.2.0
-      with:
-        tg_version: '1.0.2'
-        tofu_version: '1.11.6'
-        tg_dir: ${{ inputs.working-directory }}
-        tg_command: ${{ inputs.action-type }}
-        tg_add_approve: ${{ inputs.action-type == 'apply' && '1' || '' }}
-        github_token: ${{ inputs.token }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
       env:
-        TF_INPUT: false
+        TF_INPUT: 'false'
         GITHUB_TOKEN: ${{ inputs.token }}
         AWS_DEFAULT_REGION: ${{ inputs.aws-region }}
+        AQUA_CONFIG: ${{ github.workspace }}/.github/aqua.yaml
+        ACTION_TYPE: ${{ inputs.action-type }}
+      run: |
+        set -o pipefail
+        out="$RUNNER_TEMP/tg-out.log"
+        args=("$ACTION_TYPE" -no-color -input=false)
+        [ "$ACTION_TYPE" = apply ] && args+=(-auto-approve)
+        terragrunt "${args[@]}" 2>&1 | tee "$out"
+        code=${PIPESTATUS[0]}
+        delim="__TGEOF_$(openssl rand -hex 8)__"
+        {
+          echo "tg_action_exit_code=$code"
+          echo "tg_action_output<<$delim"
+          head -c 200000 "$out"
+          echo
+          echo "$delim"
+        } >> "$GITHUB_OUTPUT"
+        exit "$code"
 
     - name: Parse execution results
       if: always()
