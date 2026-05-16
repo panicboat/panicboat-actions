@@ -49,8 +49,8 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Track OpenTofu version pinned in terragrunt composite action",
-      "fileMatch": ["^terragrunt/action\\.yaml$"],
+      "description": "Track OpenTofu version pinned in terragrunt-run composite action",
+      "fileMatch": ["^terragrunt-run/action\\.yaml$"],
       "matchStrings": [
         "tofu_version:\\s*['\"](?<currentValue>[^'\"]+)['\"]"
       ],
@@ -60,8 +60,8 @@
     },
     {
       "customType": "regex",
-      "description": "Track Terragrunt version pinned in terragrunt composite action",
-      "fileMatch": ["^terragrunt/action\\.yaml$"],
+      "description": "Track Terragrunt version pinned in terragrunt-run composite action",
+      "fileMatch": ["^terragrunt-run/action\\.yaml$"],
       "matchStrings": [
         "tg_version:\\s*['\"](?<currentValue>[^'\"]+)['\"]"
       ],

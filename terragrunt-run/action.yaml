@@ -79,7 +79,7 @@ runs:
       uses: gruntwork-io/terragrunt-action@53dbdc2c3d43e82bf3bae10b734a968196442bec # v3.2.0
       with:
         tg_version: '1.0.2'
-        tofu_version: '1.11.6'
+        tofu_version: '1.12.0'
         tg_dir: ${{ inputs.working-directory }}
         tg_command: ${{ inputs.action-type }}
         tg_add_approve: ${{ inputs.action-type == 'apply' && '1' || '' }}
