@@ -39,14 +39,14 @@ runs:
 
     - name: Build head manifests
       id: kustomize-head
-      uses: int128/kustomize-action@9798629d2ace6037d587f4bbdc01423e28010535 # v1.181.0
+      uses: int128/kustomize-action@6cb04b0da49fce7201ff08e086072f33475d376e # v1.188.0
       with:
         kustomization: ${{ inputs.path }}/kustomization.yaml
         write-individual-files: true
 
     - name: Build base manifests
       id: kustomize-base
-      uses: int128/kustomize-action@9798629d2ace6037d587f4bbdc01423e28010535 # v1.181.0
+      uses: int128/kustomize-action@6cb04b0da49fce7201ff08e086072f33475d376e # v1.188.0
       with:
         base-directory: base
         kustomization: ${{ inputs.path }}/kustomization.yaml
