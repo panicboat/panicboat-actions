@@ -54,7 +54,7 @@ runs:
 
     - name: Diff manifests
       id: diff
-      uses: int128/diff-action@7a7e313ee8f41930654defec914b7d76a04f76ee # v2.22.0
+      uses: int128/diff-action@77a301a80335bebb9abb2d28a3dacfa844105395 # v2.28.0
       with:
         base: ${{ steps.kustomize-base.outputs.directory }}
         head: ${{ steps.kustomize-head.outputs.directory }}
