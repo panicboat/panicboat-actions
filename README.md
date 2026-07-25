@@ -10,7 +10,6 @@ This repository hosts composite actions tailored to the maintainer's environment
 
 ## Available actions
 
-- `claude-run/` — Run Claude Code via AWS Bedrock for repository automation.
 - `kustomize-diff/` — Build kustomize overlays and post diff as a PR comment.
 - `terragrunt-run/` — Execute Terragrunt plan or apply with AWS OIDC.
 
