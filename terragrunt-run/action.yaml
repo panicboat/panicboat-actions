@@ -74,24 +74,24 @@ runs:
           const verifyCredentials = require(path.join(process.env.GITHUB_ACTION_PATH, 'verify-aws-credentials.js'));
           await verifyCredentials({ core, inputs: ${{ toJSON(inputs) }} });
 
+    # AQUA_CONFIG is deliberately unset so aqua discovers the config by walking
+    # up from the working directory. Pinning it to a path forces callers to keep
+    # the file exactly there, and callers place it at the repository root so that
+    # local runs resolve the same pins as CI.
     - name: Setup aqua
       uses: aquaproj/aqua-installer@96a9bc20066c5bf5e275b41019cfc165b25f4e2e # v4.0.5
       with:
         aqua_version: v2.48.2
-      env:
-        AQUA_CONFIG: ${{ github.workspace }}/.github/aqua.yaml
 
     - name: Verify required binaries
       shell: bash
-      env:
-        AQUA_CONFIG: ${{ github.workspace }}/.github/aqua.yaml
       run: |
         set -euo pipefail
         missing=()
         command -v terragrunt >/dev/null || missing+=("gruntwork-io/terragrunt")
         command -v tofu       >/dev/null || missing+=("opentofu/opentofu")
         if [ ${#missing[@]} -gt 0 ]; then
-          echo "::error::Missing aqua packages: ${missing[*]}. Add them to .github/aqua.yaml."
+          echo "::error::Missing aqua packages: ${missing[*]}. Add them to the caller's aqua.yaml."
           exit 1
         fi
 
@@ -103,7 +103,6 @@ runs:
         TF_INPUT: 'false'
         GITHUB_TOKEN: ${{ inputs.token }}
         AWS_DEFAULT_REGION: ${{ inputs.aws-region }}
-        AQUA_CONFIG: ${{ github.workspace }}/.github/aqua.yaml
         ACTION_TYPE: ${{ inputs.action-type }}
       run: |
         set -o pipefail
