@@ -10,7 +10,6 @@ panicboat の環境向けに作った個人用 GitHub Actions composite wrapper 
 
 ## 提供 Action
 
-- `kustomize-diff/` — kustomize overlay を build して PR に diff をコメント
 - `terragrunt-run/` — AWS OIDC で Terragrunt の plan/apply を実行
 
 ## 関連

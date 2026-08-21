@@ -10,7 +10,6 @@ This repository hosts composite actions tailored to the maintainer's environment
 
 ## Available actions
 
-- `kustomize-diff/` — Build kustomize overlays and post diff as a PR comment.
 - `terragrunt-run/` — Execute Terragrunt plan or apply with AWS OIDC.
 
 ## Related
